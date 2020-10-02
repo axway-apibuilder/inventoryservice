@@ -1,0 +1,147 @@
+{
+	"swagger": "2.0",
+	"info": {
+		"title": "Inventory Managment API",
+		"version": "1.0",
+		"description": "Inventory management API",
+		"contact": {
+			"name": "Axway support",
+			"url": "https://axway.com",
+			"email": "support@axway.com"
+		}
+	},
+	"host": "localhost",
+	"paths": {
+		"/inventorys": {
+			"get": {
+				"responses": {
+					"200": {
+						"description": "List of Inventorys",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/Inventory"
+							}
+						}
+					}
+				},
+				"summary": "Get Inventorys",
+				"parameters": [],
+				"operationId": "getInventorys",
+				"description": "Return all Inventorys"
+			},
+			"post": {
+				"responses": {
+					"200": {
+						"description": "",
+						"schema": {
+							"type": "object",
+							"properties": {}
+						}
+					},
+					"201": {
+						"description": "Order Inventory",
+						"schema": {
+							"$ref": "#/definitions/Inventory"
+						}
+					},
+					"400": {
+						"description": ""
+					}
+				},
+				"parameters": [{
+					"in": "body",
+					"name": "body",
+					"schema": {
+						"$ref": "#/definitions/Inventory"
+					}
+				}],
+				"summary": "Create Inventory",
+				"operationId": "createInventory",
+				"description": "Create an Inventory"
+			}
+		},
+		"/inventorys/deduct": {
+
+			"post": {
+				"responses": {
+
+					"200": {
+						"description": "Deduct Inventory",
+						"schema": {
+							"$ref": "#/definitions/Inventory"
+						}
+					},
+					"400": {
+						"description": ""
+					}
+				},
+				"parameters": [{
+					"in": "body",
+					"name": "body",
+					"schema": {
+						"$ref": "#/definitions/Inventory"
+					}
+				}],
+				"summary": "Deduct Inventory",
+				"operationId": "deductInventory",
+				"description": "Deduct an Inventory"
+			}
+		},
+		"/inventorys/credit": {
+
+			"post": {
+				"responses": {
+
+					"200": {
+						"description": "Credit Inventory",
+						"schema": {
+							"$ref": "#/definitions/Inventory"
+						}
+					},
+					"400": {
+						"description": ""
+					}
+				},
+				"parameters": [{
+					"in": "body",
+					"name": "body",
+					"schema": {
+						"$ref": "#/definitions/Inventory"
+					}
+				}],
+				"summary": "Credit Inventory",
+				"operationId": "creditInventory",
+				"description": "Credit an Inventory"
+			}
+		}
+	},
+	"basePath": "/v1",
+	"schemes": [
+		"http"
+	],
+		"produces": [
+			"application/json"
+		],
+		"consumes": [
+			"application/json",
+			"application/xml"
+		],
+	"definitions": {
+		"Inventory": {
+			"type": "object",
+			"description": "Inventory",
+			"properties": {
+				"id": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"quantity": {
+					"type": "number"
+				}
+			}
+		}
+	}
+}
