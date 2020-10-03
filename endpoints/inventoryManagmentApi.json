@@ -146,6 +146,9 @@
         },
         "quantity": {
           "type": "number"
+        }, 
+        "price": {
+          "type": "number"
         }
       }
     }

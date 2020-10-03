@@ -30,7 +30,7 @@
 			"env"
 		]
 	},
-	"start": "http.setresponse.1",
+	"start": "productinventory.1",
 	"nodes": {
 		"http.setresponse.1": {
 			"type": "nodehandler://axway-flow/http",
@@ -46,8 +46,8 @@
 				},
 				{
 					"name": "body",
-					"value": "{\n    \"id\": \"in\",\n    \"name\": \"aliqua in magna ullamco\",\n    \"quantity\": -13846889\n}",
 					"type": "object",
+					"value": "{\n    \"id\": \"{{=it.params.body.id}}\",\n    \"name\": \"aliqua in magna ullamco\",\n    \"quantity\": -13846889\n}",
 					"metaName": "Body",
 					"metaDescription": "The response payload"
 				}
@@ -59,6 +59,138 @@
 				}
 			},
 			"metaMethod": "Set HTTP Response"
+		},
+		"productinventory.1": {
+			"type": "nodehandler://api-builder-flow-invoke/model/mysql/productinventory",
+			"name": "Find by ID",
+			"method": "findByID",
+			"parameters": [
+				{
+					"name": "id",
+					"type": "jsonpath",
+					"value": "$.params.body.id",
+					"metaName": "id"
+				}
+			],
+			"outputs": {
+				"next": {
+					"routes": [
+						"javascript.1"
+					],
+					"context": "$.foundByID",
+					"metaName": "Next"
+				},
+				"error": {
+					"routes": [],
+					"context": "$.error",
+					"metaName": "Error"
+				},
+				"notfound": {
+					"routes": [],
+					"metaName": "Not Found"
+				}
+			},
+			"metaMethod": "Find by ID"
+		},
+		"javascript.1": {
+			"type": "nodehandler://@axway/api-builder-plugin-fn-javascript/javascript",
+			"name": "Execute",
+			"method": "Execute",
+			"parameters": [
+				{
+					"name": "data",
+					"type": "jsonpath",
+					"value": "$",
+					"metaName": "Data",
+					"metaDescription": "The value to apply as the `data` argument to the JavaScript code. For objects and arrays, `data` is passed by reference."
+				},
+				{
+					"name": "code",
+					"type": "string",
+					"value": "\"var reqQuantity = data.params.body.quantity;\\n  var inventoryQuantity = data.foundByID.quantity;\\n  console.log(\\\"Requested quanity \\\" + reqQuantity);\\n  console.log(\\\"Inventory quanity \\\" + inventoryQuantity);\\n  if( inventoryQuantity >= reqQuantity ){\\n    inventoryQuantity = inventoryQuantity - reqQuantity;\\n    data.foundByID.quantity = inventoryQuantity;\\n    return true;\\n  }\\n  throw new Error('insufficient inventory');\"",
+					"metaName": "Code",
+					"metaDescription": "A JavaScript function body. Supports `await` and returning promises."
+				}
+			],
+			"outputs": {
+				"next": {
+					"context": "$.result",
+					"routes": [
+						"productinventory.2"
+					],
+					"metaName": "Next"
+				},
+				"error": {
+					"context": "$.error",
+					"routes": [
+						"http.1"
+					],
+					"metaName": "Error"
+				}
+			},
+			"metaMethod": "Execute"
+		},
+		"http.1": {
+			"type": "nodehandler://axway-flow/http",
+			"name": "Set HTTP Response",
+			"method": "setresponse",
+			"parameters": [
+				{
+					"name": "status",
+					"type": "number",
+					"value": "400",
+					"metaName": "Status",
+					"metaDescription": "The HTTP status code"
+				}
+			],
+			"outputs": {
+				"next": {
+					"context": "$.response",
+					"routes": [],
+					"metaName": "Next"
+				}
+			},
+			"metaMethod": "Set HTTP Response"
+		},
+		"productinventory.2": {
+			"type": "nodehandler://api-builder-flow-invoke/model/mysql/productinventory",
+			"name": "Update",
+			"method": "update",
+			"parameters": [
+				{
+					"name": "data",
+					"type": "jsonpath",
+					"value": "$.foundByID",
+					"metaName": "data"
+				},
+				{
+					"name": "id",
+					"type": "jsonpath",
+					"value": "$.foundByID.id",
+					"metaName": "id"
+				}
+			],
+			"outputs": {
+				"next": {
+					"routes": [
+						"http.setresponse.1"
+					],
+					"context": "$.updated",
+					"metaName": "Next"
+				},
+				"notfound": {
+					"routes": [],
+					"metaName": "Not Found"
+				},
+				"error": {
+					"routes": [
+						"http.1"
+					],
+					"context": "$.error",
+					"metaName": "Error"
+				}
+			},
+			"metaMethod": "Update"
 		}
 	}
 }

@@ -30,7 +30,7 @@
 			"env"
 		]
 	},
-	"start": "http.setresponse.1",
+	"start": "javascript.1",
 	"nodes": {
 		"http.setresponse.1": {
 			"type": "nodehandler://axway-flow/http",
@@ -39,17 +39,10 @@
 			"parameters": [
 				{
 					"name": "status",
-					"value": "200",
 					"type": "number",
+					"value": "201",
 					"metaName": "Status",
 					"metaDescription": "The HTTP status code"
-				},
-				{
-					"name": "body",
-					"value": "{}",
-					"type": "object",
-					"metaName": "Body",
-					"metaDescription": "The response payload"
 				}
 			],
 			"outputs": {
@@ -59,6 +52,70 @@
 				}
 			},
 			"metaMethod": "Set HTTP Response"
+		},
+		"productinventory.1": {
+			"type": "nodehandler://api-builder-flow-invoke/model/mysql/productinventory",
+			"name": "Create",
+			"method": "create",
+			"parameters": [
+				{
+					"name": "data",
+					"type": "jsonpath",
+					"value": "$.params.body",
+					"metaName": "data"
+				}
+			],
+			"outputs": {
+				"next": {
+					"routes": [
+						"http.setresponse.1"
+					],
+					"context": "$.created",
+					"metaName": "Next"
+				},
+				"error": {
+					"routes": [],
+					"context": "$.error",
+					"metaName": "Error"
+				}
+			},
+			"metaMethod": "Create"
+		},
+		"javascript.1": {
+			"type": "nodehandler://@axway/api-builder-plugin-fn-javascript/javascript",
+			"name": "Execute",
+			"method": "Execute",
+			"parameters": [
+				{
+					"name": "code",
+					"type": "string",
+					"value": "\"console.log(data);\"",
+					"metaName": "Code",
+					"metaDescription": "A JavaScript function body. Supports `await` and returning promises."
+				},
+				{
+					"name": "data",
+					"type": "jsonpath",
+					"value": "$",
+					"metaName": "Data",
+					"metaDescription": "The value to apply as the `data` argument to the JavaScript code. For objects and arrays, `data` is passed by reference."
+				}
+			],
+			"outputs": {
+				"next": {
+					"context": "$.result",
+					"routes": [
+						"productinventory.1"
+					],
+					"metaName": "Next"
+				},
+				"error": {
+					"context": "$.error",
+					"routes": [],
+					"metaName": "Error"
+				}
+			},
+			"metaMethod": "Execute"
 		}
 	}
 }

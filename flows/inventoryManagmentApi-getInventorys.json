@@ -30,7 +30,7 @@
 			"env"
 		]
 	},
-	"start": "http.setresponse.1",
+	"start": "productinventory.1",
 	"nodes": {
 		"http.setresponse.1": {
 			"type": "nodehandler://axway-flow/http",
@@ -46,8 +46,8 @@
 				},
 				{
 					"name": "body",
-					"value": "[\n    {\n        \"id\": \"dolore ex velit sed\",\n        \"name\": \"Lore\",\n        \"quantity\": 46052815\n    }\n]",
-					"type": "array",
+					"type": "jsonpath",
+					"value": "$.foundAll",
 					"metaName": "Body",
 					"metaDescription": "The response payload"
 				}
@@ -59,6 +59,27 @@
 				}
 			},
 			"metaMethod": "Set HTTP Response"
+		},
+		"productinventory.1": {
+			"type": "nodehandler://api-builder-flow-invoke/model/mysql/productinventory",
+			"name": "Find all",
+			"method": "findAll",
+			"parameters": [],
+			"outputs": {
+				"next": {
+					"routes": [
+						"http.setresponse.1"
+					],
+					"context": "$.foundAll",
+					"metaName": "Next"
+				},
+				"error": {
+					"routes": [],
+					"context": "$.error",
+					"metaName": "Error"
+				}
+			},
+			"metaMethod": "Find all"
 		}
 	}
 }
