@@ -13,7 +13,7 @@ module.exports = {
 			connector: '@axway/api-builder-plugin-dc-mysql',
 			connectionPooling: true,
 			connectionLimit: 10,
-			host: 'localhost',
+			host: process.env.HOST,
 			port: 3306,
 			database: 'inventory',
 			user: process.env.MYSQL_USER,
