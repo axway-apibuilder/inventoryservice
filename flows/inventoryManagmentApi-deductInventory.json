@@ -46,8 +46,8 @@
 				},
 				{
 					"name": "body",
-					"type": "object",
-					"value": "{\n    \"id\": \"{{=it.params.body.id}}\",\n    \"name\": \"aliqua in magna ullamco\",\n    \"quantity\": -13846889\n}",
+					"type": "jsonpath",
+					"value": "$.updated",
 					"metaName": "Body",
 					"metaDescription": "The response payload"
 				}
