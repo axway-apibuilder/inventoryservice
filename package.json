@@ -24,6 +24,7 @@
 		"@axway/api-builder-plugin-fn-mustache": "^1.0.1",
 		"@axway/api-builder-plugin-fn-restclient": "^2.0.0",
 		"@axway/api-builder-plugin-fn-swagger": "^2.0.0",
+		"@axway/api-builder-plugin-ft-kafka": "^0.2.0",
 		"@axway/api-builder-runtime": "^4.33.0"
 	},
 	"devDependencies": {
